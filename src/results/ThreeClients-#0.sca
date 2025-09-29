@@ -1,0 +1,155 @@
+version 3
+run ThreeClients-0-20250929-15:37:39-15600
+attr configname ThreeClients
+attr datetime 20250929-15:37:39
+attr datetimef 20250929-153739
+attr experiment ThreeClients
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network MultiClientNet
+attr processid 15600
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config extends General
+config *.numClients 3
+config *.client[0].mode "\"download\""
+config *.client[0].filename "\"readme.txt\""
+config *.client[0].requestDelay 2s
+config *.client[0].chunkSize 512B
+config *.client[1].mode "\"upload\""
+config *.client[1].filename "\"uploaded_doc.pdf\""
+config *.client[1].fileSize 1536B
+config *.client[1].requestDelay 3s
+config *.client[1].chunkSize 512B
+config *.client[2].mode "\"download\""
+config *.client[2].filename "\"data.csv\""
+config *.client[2].requestDelay 4s
+config *.client[2].chunkSize 512B
+config network MultiClientNet
+config sim-time-limit 120s
+config *.server.chunkSize 512B
+config *.server.processingDelay 0.1s
+config *.server.enableEncryption true
+config **.scalar-recording true
+config **.vector-recording true
+
+par MultiClientNet.client[0].out.channel typename "\"multi_client.EthernetChannel\""
+par MultiClientNet.client[0].out.channel disabled false
+attr mutable ""
+par MultiClientNet.client[0].out.channel delay 0.0001s
+attr mutable ""
+attr unit s
+par MultiClientNet.client[0].out.channel datarate 1e+08bps
+attr mutable ""
+attr unit bps
+par MultiClientNet.client[0].out.channel ber 0
+attr mutable ""
+par MultiClientNet.client[0].out.channel per 0
+attr mutable ""
+par MultiClientNet.server.out[0].channel typename "\"multi_client.EthernetChannel\""
+par MultiClientNet.server.out[0].channel disabled false
+attr mutable ""
+par MultiClientNet.server.out[0].channel delay 0.0001s
+attr mutable ""
+attr unit s
+par MultiClientNet.server.out[0].channel datarate 1e+08bps
+attr mutable ""
+attr unit bps
+par MultiClientNet.server.out[0].channel ber 0
+attr mutable ""
+par MultiClientNet.server.out[0].channel per 0
+attr mutable ""
+par MultiClientNet.client[1].out.channel typename "\"multi_client.EthernetChannel\""
+par MultiClientNet.client[1].out.channel disabled false
+attr mutable ""
+par MultiClientNet.client[1].out.channel delay 0.0001s
+attr mutable ""
+attr unit s
+par MultiClientNet.client[1].out.channel datarate 1e+08bps
+attr mutable ""
+attr unit bps
+par MultiClientNet.client[1].out.channel ber 0
+attr mutable ""
+par MultiClientNet.client[1].out.channel per 0
+attr mutable ""
+par MultiClientNet.server.out[1].channel typename "\"multi_client.EthernetChannel\""
+par MultiClientNet.server.out[1].channel disabled false
+attr mutable ""
+par MultiClientNet.server.out[1].channel delay 0.0001s
+attr mutable ""
+attr unit s
+par MultiClientNet.server.out[1].channel datarate 1e+08bps
+attr mutable ""
+attr unit bps
+par MultiClientNet.server.out[1].channel ber 0
+attr mutable ""
+par MultiClientNet.server.out[1].channel per 0
+attr mutable ""
+par MultiClientNet.client[2].out.channel typename "\"multi_client.EthernetChannel\""
+par MultiClientNet.client[2].out.channel disabled false
+attr mutable ""
+par MultiClientNet.client[2].out.channel delay 0.0001s
+attr mutable ""
+attr unit s
+par MultiClientNet.client[2].out.channel datarate 1e+08bps
+attr mutable ""
+attr unit bps
+par MultiClientNet.client[2].out.channel ber 0
+attr mutable ""
+par MultiClientNet.client[2].out.channel per 0
+attr mutable ""
+par MultiClientNet.server.out[2].channel typename "\"multi_client.EthernetChannel\""
+par MultiClientNet.server.out[2].channel disabled false
+attr mutable ""
+par MultiClientNet.server.out[2].channel delay 0.0001s
+attr mutable ""
+attr unit s
+par MultiClientNet.server.out[2].channel datarate 1e+08bps
+attr mutable ""
+attr unit bps
+par MultiClientNet.server.out[2].channel ber 0
+attr mutable ""
+par MultiClientNet.server.out[2].channel per 0
+attr mutable ""
+par MultiClientNet.client[0] typename "\"multi_client.MultiClient\""
+par MultiClientNet.client[0] filename "\"readme.txt\""
+par MultiClientNet.client[0] fileSize 1024B
+attr unit B
+par MultiClientNet.client[0] requestDelay 2s
+attr unit s
+par MultiClientNet.client[0] mode "\"download\""
+par MultiClientNet.client[0] chunkSize 512B
+attr unit B
+par MultiClientNet.client[1] typename "\"multi_client.MultiClient\""
+par MultiClientNet.client[1] filename "\"uploaded_doc.pdf\""
+par MultiClientNet.client[1] fileSize 1536B
+attr unit B
+par MultiClientNet.client[1] requestDelay 3s
+attr unit s
+par MultiClientNet.client[1] mode "\"upload\""
+par MultiClientNet.client[1] chunkSize 512B
+attr unit B
+par MultiClientNet.client[2] typename "\"multi_client.MultiClient\""
+par MultiClientNet.client[2] filename "\"data.csv\""
+par MultiClientNet.client[2] fileSize 1024B
+attr unit B
+par MultiClientNet.client[2] requestDelay 4s
+attr unit s
+par MultiClientNet.client[2] mode "\"download\""
+par MultiClientNet.client[2] chunkSize 512B
+attr unit B
+par MultiClientNet.server typename "\"multi_client.MultiServer\""
+par MultiClientNet.server chunkSize 512B
+attr unit B
+par MultiClientNet.server processingDelay 0.1s
+attr unit s
+par MultiClientNet.server enableEncryption true
+par MultiClientNet typename "\"multi_client.MultiClientNet\""
+par MultiClientNet numClients 3
+
