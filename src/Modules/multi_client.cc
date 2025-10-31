@@ -1,7 +1,6 @@
 /*
  * multi_client.cc
  *
- *  Created on: Sep 29, 2025
  *      Author: mmahm
  */
 
@@ -111,23 +110,23 @@ void MultiClient::handleMessage(cMessage *msg) {
         } else if (ftMsg->getMsgType() == 3) { // ACK
             if (ftMsg->getSeqNum() == -2) {
                 // Upload ready signal
-                EV << "✅ Server ready for upload" << endl;
+                EV << "Server ready for upload" << endl;
                 uploadStarted = true;  // Mark upload as started
                 sendNextUploadChunk();
             } else if (mode == UPLOADING && uploadStarted) {
                 // ACK for uploaded chunk
-                EV << "✅ Chunk " << ftMsg->getSeqNum() << " acknowledged" << endl;
+                EV << "Chunk " << ftMsg->getSeqNum() << " acknowledged" << endl;
                 if (sentChunks < uploadChunks) {
                     // Schedule next chunk
                     scheduleAt(simTime() + 0.1, new cMessage("sendNext"));
                 } else {
-                    EV << "🎉 Upload complete!" << endl;
+                    EV << "Upload complete!" << endl;
                     mode = IDLE;
                     uploadStarted = false;
                 }
             }
         } else if (ftMsg->getMsgType() == 4) { // ERROR
-            EV << "❌ Error: " << ftMsg->getData() << endl;
+            EV << " Error: " << ftMsg->getData() << endl;
         }
 
         delete ftMsg;
@@ -139,7 +138,7 @@ void MultiClient::sendReadRequest() {
     request->setMsgType(1); // READ_REQUEST
     request->setFilename(filename.c_str());
 
-    EV << "📥 Requesting download: " << filename << endl;
+    EV << "Requesting download: " << filename << endl;
     send(request, "out");
 }
 
@@ -158,7 +157,7 @@ void MultiClient::sendWriteRequest() {
     request->setFilename(filename.c_str());
     request->setFileSize(fileSize);
 
-    EV << "📤 Requesting upload: " << filename << " (" << fileSize << " bytes)" << endl;
+    EV << "Requesting upload: " << filename << " (" << fileSize << " bytes)" << endl;
     send(request, "out");
 }
 
@@ -169,9 +168,9 @@ void MultiClient::handleKeyExchange(FileTransferMsg *msg) {
 
     if (mode == DOWNLOADING) {
         expectedChunks = msg->getTotalChunks();
-        EV << "🔑 Received encryption key: " << sessionKey << " for download" << endl;
+        EV << " Received encryption key: " << sessionKey << " for download" << endl;
     } else {
-        EV << "🔑 Received encryption key: " << sessionKey << " for upload" << endl;
+        EV << "Received encryption key: " << sessionKey << " for upload" << endl;
     }
 
     FileTransferMsg *ack = new FileTransferMsg("KeyACK");
@@ -186,13 +185,13 @@ void MultiClient::handleDownloadData(FileTransferMsg *msg) {
 
     if (msg->getEncrypted() && encryptionActive) {
         finalData = EncryptionUtil::decrypt(receivedData, sessionKey);
-        EV << "🔓 Decrypted chunk " << msg->getSeqNum() << endl;
+        EV << " Decrypted chunk " << msg->getSeqNum() << endl;
     }
 
     reconstructedFile += finalData;
     receivedChunks++;
 
-    EV << "📥 Received chunk " << msg->getSeqNum() << "/" << expectedChunks << endl;
+    EV << "Received chunk " << msg->getSeqNum() << "/" << expectedChunks << endl;
 
     FileTransferMsg *ack = new FileTransferMsg("ChunkACK");
     ack->setMsgType(3);
@@ -200,7 +199,7 @@ void MultiClient::handleDownloadData(FileTransferMsg *msg) {
     send(ack, "out");
 
     if (msg->isLastChunk()) {
-        EV << "🎉 Download complete! Received " << reconstructedFile.length() << " bytes" << endl;
+        EV << " Download complete! Received " << reconstructedFile.length() << " bytes" << endl;
         mode = IDLE;
         reconstructedFile.clear();
         receivedChunks = 0;
@@ -226,7 +225,7 @@ void MultiClient::sendNextUploadChunk() {
     if (encryptionActive) {
         finalData = EncryptionUtil::encrypt(chunkData, sessionKey);
         checksum = EncryptionUtil::calculateChecksum(chunkData);
-        EV << "🔒 Encrypting chunk " << sentChunks << endl;
+        EV << " Encrypting chunk " << sentChunks << endl;
     }
 
     FileTransferMsg *dataMsg = new FileTransferMsg("UploadData");
@@ -240,14 +239,14 @@ void MultiClient::sendNextUploadChunk() {
     dataMsg->setChecksum(checksum.c_str());
     dataMsg->setIsLastChunk(sentChunks == uploadChunks - 1);
 
-    EV << "📤 Uploading chunk " << sentChunks << "/" << uploadChunks << endl;
+    EV << "Uploading chunk " << sentChunks << "/" << uploadChunks << endl;
 
     send(dataMsg, "out");
     sentChunks++;
 }
 
 string MultiClient::generateUploadData(int size) {
-    string content = "🔼 UPLOAD DATA from " + getFullPath() + " | ";
+    string content = " UPLOAD DATA from " + getFullPath() + " | ";
     content += "This is client-generated content for upload. ";
     string result;
 

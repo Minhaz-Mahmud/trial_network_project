@@ -30,6 +30,7 @@ simple MultiClient
         double requestDelay @unit(s) = default(1s);
         string mode = default("download");  // "download" or "upload"
         int chunkSize @unit(B) = default(512B);
+        @display("i=device/laptop");
     gates:
         output out;
         input in;
@@ -41,6 +42,7 @@ simple MultiServer
         int chunkSize @unit(B) = default(512B);
         double processingDelay @unit(s) = default(0.1s);
         bool enableEncryption = default(true);
+        @display("i=device/server");
     gates:
         output out[];
         input in[];

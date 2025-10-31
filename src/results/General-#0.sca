@@ -1,36 +1,21 @@
 version 3
-run ThreeClients-0-20251030-03:41:01-13340
-attr configname ThreeClients
-attr datetime 20251030-03:41:01
-attr datetimef 20251030-034101
-attr experiment ThreeClients
+run General-0-20251030-03:32:45-16972
+attr configname General
+attr datetime 20251030-03:32:45
+attr datetimef 20251030-033245
+attr experiment General
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvarsd ""
 attr iterationvarsf ""
 attr measurement ""
 attr network MultiClientNet
-attr processid 13340
+attr processid 16972
 attr repetition 0
 attr replication #0
 attr resultdir results
 attr runnumber 0
 attr seedset 0
-config extends General
-config *.numClients 3
-config *.client[0].mode "\"download\""
-config *.client[0].filename "\"readme.txt\""
-config *.client[0].requestDelay 2s
-config *.client[0].chunkSize 512B
-config *.client[1].mode "\"upload\""
-config *.client[1].filename "\"uploaded_doc.pdf\""
-config *.client[1].fileSize 1536B
-config *.client[1].requestDelay 2s
-config *.client[1].chunkSize 512B
-config *.client[2].mode "\"download\""
-config *.client[2].filename "\"data.csv\""
-config *.client[2].requestDelay 4s
-config *.client[2].chunkSize 512B
 config network MultiClientNet
 config sim-time-limit 120s
 config *.server.chunkSize 512B
@@ -118,28 +103,28 @@ attr mutable ""
 par MultiClientNet.server.out[2].channel per 0
 attr mutable ""
 par MultiClientNet.client[0] typename "\"multi_client.MultiClient\""
-par MultiClientNet.client[0] filename "\"readme.txt\""
+par MultiClientNet.client[0] filename "\"test.txt\""
 par MultiClientNet.client[0] fileSize 1024B
 attr unit B
-par MultiClientNet.client[0] requestDelay 2s
+par MultiClientNet.client[0] requestDelay 1s
 attr unit s
 par MultiClientNet.client[0] mode "\"download\""
 par MultiClientNet.client[0] chunkSize 512B
 attr unit B
 par MultiClientNet.client[1] typename "\"multi_client.MultiClient\""
-par MultiClientNet.client[1] filename "\"uploaded_doc.pdf\""
-par MultiClientNet.client[1] fileSize 1536B
+par MultiClientNet.client[1] filename "\"test.txt\""
+par MultiClientNet.client[1] fileSize 1024B
 attr unit B
-par MultiClientNet.client[1] requestDelay 2s
+par MultiClientNet.client[1] requestDelay 1s
 attr unit s
-par MultiClientNet.client[1] mode "\"upload\""
+par MultiClientNet.client[1] mode "\"download\""
 par MultiClientNet.client[1] chunkSize 512B
 attr unit B
 par MultiClientNet.client[2] typename "\"multi_client.MultiClient\""
-par MultiClientNet.client[2] filename "\"data.csv\""
+par MultiClientNet.client[2] filename "\"test.txt\""
 par MultiClientNet.client[2] fileSize 1024B
 attr unit B
-par MultiClientNet.client[2] requestDelay 4s
+par MultiClientNet.client[2] requestDelay 1s
 attr unit s
 par MultiClientNet.client[2] mode "\"download\""
 par MultiClientNet.client[2] chunkSize 512B

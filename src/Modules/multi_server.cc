@@ -1,7 +1,6 @@
 /*
  * multi_server.cc
- *
- *  Created on: Sep 29, 2025
+
  *      Author: mmahm
  */
 
@@ -69,9 +68,9 @@ void MultiServer::initialize() {
     fileStorage["data.csv"] = generateDummyFile("data.csv", 2048);
     fileStorage["image.jpg"] = generateDummyFile("image.jpg", 3072);
 
-    EV << "🌐 Multi-Client Server initialized" << endl;
-    EV << "📁 " << fileStorage.size() << " files available for download" << endl;
-    EV << "🔒 Encryption: " << (enableEncryption ? "ON" : "OFF") << endl;
+    EV << "Multi-Client Server initialized" << endl;
+    EV << "" << fileStorage.size() << " files available for download" << endl;
+    EV << "Encryption: " << (enableEncryption ? "ON" : "OFF") << endl;
 }
 
 int MultiServer::getClientIdFromGate(cGate* gate) {
@@ -112,11 +111,11 @@ void MultiServer::handleMessage(cMessage *msg) {
 void MultiServer::handleReadRequest(FileTransferMsg *msg, int clientId) {
     string filename = msg->getFilename();
 
-    EV << "📥 Client " << clientId << " requests download: " << filename << endl;
+    EV << " Client " << clientId << " requests download: " << filename << endl;
 
     // Check if file exists
     if (fileStorage.find(filename) == fileStorage.end()) {
-        EV << "❌ File not found: " << filename << endl;
+        EV << "File not found: " << filename << endl;
         FileTransferMsg *error = new FileTransferMsg("Error");
         error->setMsgType(4);
         error->setData("File not found");
@@ -138,7 +137,7 @@ void MultiServer::handleReadRequest(FileTransferMsg *msg, int clientId) {
     if (enableEncryption) {
         session.sessionKey = EncryptionUtil::generateSessionKey();
         session.encryptionEnabled = true;
-        EV << "🔑 Generated key for client " << clientId << ": " << session.sessionKey << endl;
+        EV << " Generated key for client " << clientId << ": " << session.sessionKey << endl;
     } else {
         session.encryptionEnabled = false;
     }
@@ -156,7 +155,7 @@ void MultiServer::handleWriteRequest(FileTransferMsg *msg, int clientId) {
     string filename = msg->getFilename();
     int fileSize = msg->getFileSize();
 
-    EV << "📤 Client " << clientId << " wants to upload: " << filename
+    EV << " Client " << clientId << " wants to upload: " << filename
        << " (" << fileSize << " bytes)" << endl;
 
     // Setup upload session
@@ -173,7 +172,7 @@ void MultiServer::handleWriteRequest(FileTransferMsg *msg, int clientId) {
     if (enableEncryption) {
         session.sessionKey = EncryptionUtil::generateSessionKey();
         session.encryptionEnabled = true;
-        EV << "🔑 Generated key for client " << clientId << ": " << session.sessionKey << endl;
+        EV << " Generated key for client " << clientId << ": " << session.sessionKey << endl;
     } else {
         session.encryptionEnabled = false;
     }
@@ -201,14 +200,14 @@ void MultiServer::handleUploadData(FileTransferMsg *msg, int clientId) {
     // Decrypt if needed
     if (msg->getEncrypted() && session.encryptionEnabled) {
         finalData = EncryptionUtil::decrypt(receivedData, session.sessionKey);
-        EV << "🔓 Client " << clientId << " - Decrypted chunk " << msg->getSeqNum() << endl;
+        EV << " Client " << clientId << " - Decrypted chunk " << msg->getSeqNum() << endl;
     }
 
     // Accumulate data
     session.fileData += finalData;
     session.currentChunk++;
 
-    EV << "📥 Client " << clientId << " - Received chunk "
+    EV << " Client " << clientId << " - Received chunk "
        << msg->getSeqNum() << "/" << session.totalChunks << endl;
 
     // Send ACK
@@ -227,9 +226,9 @@ void MultiServer::saveUploadedFile(int clientId) {
     ClientSession &session = clientSessions[clientId];
     fileStorage[session.filename] = session.fileData;
 
-    EV << "💾 Client " << clientId << " - Upload complete: " << session.filename << endl;
-    EV << "📊 Saved " << session.fileData.length() << " bytes" << endl;
-    EV << "📁 Total files in storage: " << fileStorage.size() << endl;
+    EV << " Client " << clientId << " - Upload complete: " << session.filename << endl;
+    EV << " Saved " << session.fileData.length() << " bytes" << endl;
+    EV << " Total files in storage: " << fileStorage.size() << endl;
 
     session.active = false;
 }
@@ -244,7 +243,7 @@ void MultiServer::sendKeyExchange(int clientId) {
     keyMsg->setTotalChunks(session.totalChunks);
     keyMsg->setClientId(clientId);
 
-    EV << "🔑 Sending key to client " << clientId << endl;
+    EV << " Sending key to client " << clientId << endl;
     send(keyMsg, "out", clientId);
 }
 
@@ -255,7 +254,7 @@ void MultiServer::handleAck(FileTransferMsg *msg, int clientId) {
 
     if (msg->getSeqNum() == -1) {
         // Key exchange ACK
-        EV << "🔑 Client " << clientId << " - Key confirmed" << endl;
+        EV << " Client " << clientId << " - Key confirmed" << endl;
 
         if (session.mode == DOWNLOAD) {
             sendNextDownloadChunk(clientId);
@@ -270,14 +269,14 @@ void MultiServer::handleAck(FileTransferMsg *msg, int clientId) {
     }
 
     if (session.mode == DOWNLOAD) {
-        EV << "✅ Client " << clientId << " - ACK for chunk " << msg->getSeqNum() << endl;
+        EV << " Client " << clientId << " - ACK for chunk " << msg->getSeqNum() << endl;
 
         if (session.currentChunk < session.totalChunks) {
             FileTransferMsg *timer = new FileTransferMsg("downloadTimer");
             timer->setClientId(clientId);
             scheduleAt(simTime() + par("processingDelay"), timer);
         } else {
-            EV << "🎉 Client " << clientId << " - Download complete!" << endl;
+            EV << " Client " << clientId << " - Download complete!" << endl;
             session.active = false;
         }
     }
@@ -297,7 +296,7 @@ void MultiServer::sendNextDownloadChunk(int clientId) {
     if (session.encryptionEnabled) {
         finalData = EncryptionUtil::encrypt(chunkData, session.sessionKey);
         checksum = EncryptionUtil::calculateChecksum(chunkData);
-        EV << "🔒 Client " << clientId << " - Encrypting chunk " << session.currentChunk << endl;
+        EV << " Client " << clientId << " - Encrypting chunk " << session.currentChunk << endl;
     }
 
     FileTransferMsg *dataMsg = new FileTransferMsg("DownloadData");
@@ -313,7 +312,7 @@ void MultiServer::sendNextDownloadChunk(int clientId) {
     dataMsg->setIsLastChunk(session.currentChunk == session.totalChunks - 1);
     dataMsg->setClientId(clientId);
 
-    EV << "📤 Client " << clientId << " - Sending chunk "
+    EV << " Client " << clientId << " - Sending chunk "
        << session.currentChunk << "/" << session.totalChunks << endl;
 
     send(dataMsg, "out", clientId);
@@ -321,7 +320,7 @@ void MultiServer::sendNextDownloadChunk(int clientId) {
 }
 
 string MultiServer::generateDummyFile(const string& filename, int size) {
-    string content = "📄 File: " + filename + " | This is sample content. ";
+    string content = " File: " + filename + " | This is sample content. ";
     string result;
 
     while (result.length() < size) {
